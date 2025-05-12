@@ -1,0 +1,132 @@
+using static System.Console;
+namespace QueenslandRevenue
+{
+    class Program
+    {
+        static void Main()
+        {
+            int prevYear, currentYear;
+            string userInput;
+            char[] contestantTalent = {'S', 'D', 'M', 'O'};
+            int[] codeCount = { 0, 0, 0, 0 };
+            bool validCheck;
+            bool charCheck;
+            char inputChar;
+            const char SENTINEL = 'X';
+
+            do // input and test using do loop
+            {
+                Write("How many contestants entered last year's competition? >> ");
+                userInput = ReadLine();
+                prevYear = Convert.ToInt32(userInput);
+                if (prevYear >= 0 && prevYear <= 30) 
+                    break;
+                else 
+                    WriteLine("This is not a valid number, please try again.");
+                WriteLine("---");
+            } while (prevYear < 0 || prevYear > 30);
+            // this year's entries
+            Write("How many contestants entered this year's competition? >> ");
+            userInput = ReadLine();
+            currentYear = Convert.ToInt32(userInput);
+            while (currentYear < 0 || currentYear > 30) // test using while loop
+            {
+                WriteLine("This is not a valid number, please try again.");
+                WriteLine("---");
+                Write("How many contestants entered this year's competition? >> ");
+                userInput = ReadLine();
+                currentYear = Convert.ToInt32(userInput);
+            }
+            // display data
+            WriteLine("=======");
+            WriteLine("Last year, there were {0} contestants, and this year, there are {1} contestants.", prevYear, currentYear);
+
+            if (currentYear > prevYear * 2) // display statement depending on statistics
+                WriteLine("The competition is more than twice as big this year!");
+            else if (currentYear >= prevYear && currentYear <= prevYear * 2)
+                WriteLine("The competition is bigger than ever!");
+            else
+                WriteLine("A tighter race this year! Come out and cast your vote!");
+
+            // arrays to store contestant names and codes
+            string[] contestantName = new string[currentYear];
+            char[] contestantCode = new char[currentYear];
+
+            // loop to enter names and codes
+            for (int i = 0; i < currentYear; i++) // for the number of contestants
+            {
+                Write("What is contestant {0}'s name? >> ", i + 1); // ask for name
+                contestantName[i] = ReadLine();
+                WriteLine();
+                validCheck = false;
+                do
+                {
+                    Write("What talent is contestant {0} entering this year? >> ", contestantName[i]);
+                    contestantCode[i] = Convert.ToChar(ReadLine()); // then ask for a valid talent code
+
+                    for (int j = 0; j < contestantTalent.Length; j++) // checks whether talent is valid
+                    {
+                        if (contestantCode[i] == contestantTalent[j])
+                        {
+                            validCheck = true;
+                            j = contestantTalent.Length; // breaks the loop if the code is validated
+                        }
+                    }
+                    if (validCheck != true) WriteLine("That's not an option! Try again."); // request retry if it's still false
+                } while (validCheck != true); // stops the do loop once a valid code is entered
+            }
+            foreach (char c in contestantCode) // array with a count of each talent code
+            {
+                switch (c) // checks through each code for a match
+                {
+                    case 'S':
+                        codeCount[0]++;
+                        break;
+                    case 'D':
+                        codeCount[1]++;
+                        break;
+                    case 'M':
+                        codeCount[2]++;
+                        break;
+                    case 'O':
+                        codeCount[3]++;
+                        break;
+                }
+            }
+            for (int e = 0; e < contestantTalent.Length; e++) // returns number of contestants for each talent
+            {
+                WriteLine(); 
+                WriteLine("In category {0} there are {1} contestants. ", contestantTalent[e], codeCount[e].ToString("F0"));
+            }
+            do 
+            {
+                Write("Which talent code do you want to list? Type 'X' to exit >> ");
+                inputChar = Convert.ToChar(ReadLine()); ; //  ask for a valid talent code
+                charCheck = false;
+                for (int j = 0; j < contestantTalent.Length; j++) // checks whether talent is valid
+                {
+                    if (inputChar == contestantTalent[j])
+                    {
+                        charCheck = true;
+                        j = contestantTalent.Length; // breaks the loop if the code is validated
+                    }
+                }
+                if (charCheck != true && inputChar != SENTINEL) WriteLine("That's not an option! Try again."); // request retry if it's still false
+                else if (inputChar != SENTINEL && charCheck == true)
+                {
+                    WriteLine("Contestants in category {0}: ", inputChar);
+                    for (int x = 0; x < contestantCode.Length; x++) //loops through all contestants
+                    {
+                        if (inputChar == contestantCode[x]) // finds matching codes
+                        {
+                            WriteLine(contestantName[x]); // prints the name of the contestant
+                        }
+                    }
+                    WriteLine("=======");
+                }
+            } while (inputChar != SENTINEL); // stops the do loop once the sentinel code is entered
+            
+            WriteLine("Thank you for using my app.");
+        }
+    }
+}
